@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App - Fort Wayne</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { padding-top: 50px; }
+        #weather-info { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container text-center">
+        <h1>Fort Wayne Weather Information</h1>
+        <div id="weather-info">
+            <!-- Weather information will be displayed here -->
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetchWeatherData();
+        });
+
+        function fetchWeatherData() {
+            const apiKey = '5ae4b248bd4758352d17012a10baa7f7';
+            const url = `https://api.openweathermap.org/data/2.5/weather?q=Fort%20Wayne,Indiana,USA&appid=${apiKey}&units=imperial`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    displayWeatherData(data);
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function displayWeatherData(data) {
+            const weatherInfoDiv = document.getElementById('weather-info');
+            const temp = data.main.temp;
+            const tempHigh = data.main.temp_max;
+            const windSpeed = data.wind.speed;
+            const windDirection = data.wind.deg;
+            const rain = data.rain ? "Yes" : "No";
+            const snow = data.snow ? "Yes" : "No";
+
+            weatherInfoDiv.innerHTML = `
+                <p>Current Temperature: ${temp}°F</p>
+                <p>High Temperature: ${tempHigh}°F</p>
+                <p>Raining: ${rain}</p>
+                <p>Snow: ${snow}</p>
+                <p>Wind Speed: ${windSpeed} mph</p>
+                <p>Wind Direction: ${windDirection} degrees</p>
+            `;
+        }
+    </script>
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
