@@ -38,7 +38,7 @@
 
         function fetchPollutionData() {
             const apiKey = '5ae4b248bd4758352d17012a10baa7f7';
-            const pollutionUrl = `http://api.openweathermap.org/data/2.5/air_pollution?lat=41.0793&lon=-85.1394&appid=${apiKey}`;
+            const pollutionUrl = `https://api.openweathermap.org/data/2.5/air_pollution?lat=41.0793&lon=-85.1394&appid=${apiKey}`;
 
             fetch(pollutionUrl)
                 .then(response => response.json())
