@@ -21,16 +21,29 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             fetchWeatherData();
+            fetchPollutionData();
         });
 
         function fetchWeatherData() {
             const apiKey = '5ae4b248bd4758352d17012a10baa7f7';
-            const url = `https://api.openweathermap.org/data/2.5/weather?q=Fort%20Wayne,Indiana,USA&appid=${apiKey}&units=imperial`;
+            const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=Fort%20Wayne,Indiana,USA&appid=${apiKey}&units=imperial`;
 
-            fetch(url)
+            fetch(weatherUrl)
                 .then(response => response.json())
                 .then(data => {
                     displayWeatherData(data);
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function fetchPollutionData() {
+            const apiKey = '5ae4b248bd4758352d17012a10baa7f7';
+            const pollutionUrl = `http://api.openweathermap.org/data/2.5/air_pollution?lat=41.0793&lon=-85.1394&appid=${apiKey}`;
+
+            fetch(pollutionUrl)
+                .then(response => response.json())
+                .then(data => {
+                    displayPollutionData(data);
                 })
                 .catch(error => console.error('Error:', error));
         }
@@ -53,10 +66,18 @@
                 <p>Wind Direction: ${windDirection} degrees</p>
             `;
         }
+
+        function displayPollutionData(data) {
+            const weatherInfoDiv = document.getElementById('weather-info');
+            const pollutionIndex = data.list[0].main.aqi;
+
+            weatherInfoDiv.innerHTML += `
+                <p>Pollution Index: ${pollutionIndex}</p>
+            `;
+        }
     </script>
 
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
 
-    <p>Thanks for visiting!</p>
 </body>
 </html>
