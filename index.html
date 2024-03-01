@@ -8,7 +8,7 @@
     <style>
         body { padding-top: 50px; }
         #weather-info { margin-top: 20px; }
-        h1 { font-weight: bold; }
+        h1 { font-weight: bold; font-size: 24px; }
         table { margin: 0 auto; }
         .temp-highlight { background-color: lightgreen; }
         .temp-lowlight { background-color: lightblue; }
@@ -104,9 +104,14 @@
             const weatherInfoDiv = document.getElementById('weather-info');
             const pollutionIndex = data.list[0].main.aqi;
 
-            weatherInfoDiv.innerHTML += `
-                <p>Pollution Index: ${pollutionIndex}</p>
+            // Append Pollution Index to the table
+            const table = weatherInfoDiv.querySelector('table tbody');
+            const pollutionRow = document.createElement('tr');
+            pollutionRow.innerHTML = `
+                <td>Pollution Index:</td>
+                <td>${pollutionIndex}</td>
             `;
+            table.appendChild(pollutionRow);
         }
     </script>
 
