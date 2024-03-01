@@ -8,6 +8,10 @@
     <style>
         body { padding-top: 50px; }
         #weather-info { margin-top: 20px; }
+        h1 { font-weight: bold; }
+        table { margin: 0 auto; }
+        .temp-highlight { background-color: lightgreen; }
+        .temp-lowlight { background-color: lightblue; }
     </style>
 </head>
 <body>
@@ -57,13 +61,42 @@
             const rain = data.rain ? "Yes" : "No";
             const snow = data.snow ? "Yes" : "No";
 
+            let tempClass = '';
+            if (temp > 45) {
+                tempClass = 'temp-highlight';
+            } else {
+                tempClass = 'temp-lowlight';
+            }
+
             weatherInfoDiv.innerHTML = `
-                <p>Current Temperature: ${temp}°F</p>
-                <p>High Temperature: ${tempHigh}°F</p>
-                <p>Raining: ${rain}</p>
-                <p>Snow: ${snow}</p>
-                <p>Wind Speed: ${windSpeed} mph</p>
-                <p>Wind Direction: ${windDirection} degrees</p>
+                <table class="table table-bordered table-striped text-right">
+                    <tbody>
+                        <tr>
+                            <td>Current Temperature:</td>
+                            <td class="${tempClass}">${temp}°F</td>
+                        </tr>
+                        <tr>
+                            <td>High Temperature:</td>
+                            <td>${tempHigh}°F</td>
+                        </tr>
+                        <tr>
+                            <td>Raining:</td>
+                            <td>${rain}</td>
+                        </tr>
+                        <tr>
+                            <td>Snow:</td>
+                            <td>${snow}</td>
+                        </tr>
+                        <tr>
+                            <td>Wind Speed:</td>
+                            <td>${windSpeed} mph</td>
+                        </tr>
+                        <tr>
+                            <td>Wind Direction:</td>
+                            <td>${windDirection} degrees</td>
+                        </tr>
+                    </tbody>
+                </table>
             `;
         }
 
