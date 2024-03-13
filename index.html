@@ -25,67 +25,53 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             fetchWeatherData();
-            fetchPollutionData();
         });
-
+    
         function fetchWeatherData() {
-            const apiKey = '5ae4b248bd4758352d17012a10baa7f7';
-            const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=Fort%20Wayne,Indiana,USA&appid=${apiKey}&units=imperial`;
-
-            fetch(weatherUrl)
+            const apiKey = '9c0adeb219cb498dbba142333241303';
+            const currentWeatherUrl = `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=Fort Wayne&aqi=yes`;
+    
+            fetch(currentWeatherUrl)
                 .then(response => response.json())
                 .then(data => {
-                    displayWeatherData(data);
+                    displayCurrentWeatherData(data);
+                    fetchForecastData(); // Fetch forecast data after current weather is successfully fetched
                 })
                 .catch(error => console.error('Error:', error));
         }
-
-        function fetchPollutionData() {
-            const apiKey = '5ae4b248bd4758352d17012a10baa7f7';
-            const pollutionUrl = `https://api.openweathermap.org/data/2.5/air_pollution?lat=41.0793&lon=-85.1394&appid=${apiKey}`;
-
-            fetch(pollutionUrl)
+    
+        function fetchForecastData() {
+            const apiKey = '9c0adeb219cb498dbba142333241303';
+            const forecastUrl = `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=Fort Wayne&days=1&aqi=no`; // No need for AQI in forecast
+    
+            fetch(forecastUrl)
                 .then(response => response.json())
                 .then(data => {
-                    displayPollutionData(data);
+                    displayForecastData(data);
                 })
-                .catch(error => console.error('Error:', error));
+                .catch(error => console.error('Error with forecast data:', error));
         }
-
-        function displayWeatherData(data) {
+    
+        function displayCurrentWeatherData(data) {
             const weatherInfoDiv = document.getElementById('weather-info');
-            const temp = data.main.temp;
-            const tempHigh = data.main.temp_max;
-            const windSpeed = data.wind.speed;
-            const windDirection = data.wind.deg;
-            const rain = data.rain ? "Yes" : "No";
-            const snow = data.snow ? "Yes" : "No";
-
-            let tempClass = '';
-            if (temp > 45) {
-                tempClass = 'temp-highlight';
-            } else {
-                tempClass = 'temp-lowlight';
-            }
-
+            const temp = data.current.temp_f;
+            const windSpeed = data.current.wind_mph;
+            const windDirection = data.current.wind_dir;
+            const aqi = data.current.air_quality.pm2_5;
+    
+            let tempClass = temp > 45 ? 'temp-highlight' : 'temp-lowlight';
+    
             weatherInfoDiv.innerHTML = `
-                <table class="table table-bordered table-striped text-right">
+                <table class="table table-bordered table-striped text-right" id="weather-table">
                     <tbody>
                         <tr>
                             <td>Current Temperature:</td>
                             <td class="${tempClass}">${temp}°F</td>
                         </tr>
-                        <tr>
-                            <td>High in next 3 hours:</td>
-                            <td>${tempHigh}°F</td>
-                        </tr>
-                        <tr>
-                            <td>Raining:</td>
-                            <td>${rain}</td>
-                        </tr>
-                        <tr>
-                            <td>Snow:</td>
-                            <td>${snow}</td>
+                        <!-- Placeholder for high temperature, will be filled by forecast data -->
+                        <tr id="high-temp-row">
+                            <td>High Today:</td>
+                            <td>Loading...</td>
                         </tr>
                         <tr>
                             <td>Wind Speed:</td>
@@ -93,27 +79,28 @@
                         </tr>
                         <tr>
                             <td>Wind Direction:</td>
-                            <td>${windDirection} degrees</td>
+                            <td>${windDirection}</td>
+                        </tr>
+                        <tr>
+                            <td>Air Quality Index (PM2.5):</td>
+                            <td>${aqi}</td>
                         </tr>
                     </tbody>
                 </table>
             `;
         }
-
-        function displayPollutionData(data) {
-            const weatherInfoDiv = document.getElementById('weather-info');
-            const pollutionIndex = data.list[0].main.aqi;
-
-            // Append Pollution Index to the table
-            const table = weatherInfoDiv.querySelector('table tbody');
-            const pollutionRow = document.createElement('tr');
-            pollutionRow.innerHTML = `
-                <td>Pollution Index:</td>
-                <td>${pollutionIndex}</td>
+    
+        function displayForecastData(data) {
+            const tempHigh = data.forecast.forecastday[0].day.maxtemp_f;
+            const highTempRow = document.getElementById('high-temp-row');
+    
+            highTempRow.innerHTML = `
+                <td>High Today:</td>
+                <td>${tempHigh}°F</td>
             `;
-            table.appendChild(pollutionRow);
         }
     </script>
+    
 
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
 
