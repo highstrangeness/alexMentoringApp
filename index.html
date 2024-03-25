@@ -25,41 +25,29 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             fetchWeatherData();
-            fetchPollutionData();
         });
 
         function fetchWeatherData() {
-            const apiKey = '5ae4b248bd4758352d17012a10baa7f7';
-            const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=Fort%20Wayne,Indiana,USA&appid=${apiKey}&units=imperial`;
+            const apiKey = 'f26694ed1d494fcebf4153710242503'; // Replace with your WeatherAPI key
+            const weatherUrl = `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=Fort%20Wayne`;
+            const forecastUrl = `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=Fort%20Wayne`;
 
-            fetch(weatherUrl)
-                .then(response => response.json())
-                .then(data => {
-                    displayWeatherData(data);
-                })
-                .catch(error => console.error('Error:', error));
+            Promise.all([
+                fetch(weatherUrl).then(response => response.json()),
+                fetch(forecastUrl).then(response => response.json())
+            ]).then(data => {
+                displayWeatherAndForecastData(data[0], data[1]);
+            }).catch(error => console.error('Error:', error));
         }
 
-        function fetchPollutionData() {
-            const apiKey = '5ae4b248bd4758352d17012a10baa7f7';
-            const pollutionUrl = `https://api.openweathermap.org/data/2.5/air_pollution?lat=41.0793&lon=-85.1394&appid=${apiKey}`;
-
-            fetch(pollutionUrl)
-                .then(response => response.json())
-                .then(data => {
-                    displayPollutionData(data);
-                })
-                .catch(error => console.error('Error:', error));
-        }
-
-        function displayWeatherData(data) {
+        function displayWeatherAndForecastData(weatherData, forecastData) {
             const weatherInfoDiv = document.getElementById('weather-info');
-            const temp = data.main.temp;
-            const tempHigh = data.main.temp_max;
-            const windSpeed = data.wind.speed;
-            const windDirection = data.wind.deg;
-            const rain = data.rain ? "Yes" : "No";
-            const snow = data.snow ? "Yes" : "No";
+            const temp = weatherData.current.temp_f;
+            const windSpeed = weatherData.current.wind_mph;
+            const windDirection = weatherData.current.wind_degree;
+            const rain = weatherData.current.precip_in > 0 ? "Yes" : "No";
+            const snow = weatherData.current.snow_in > 0 ? "Yes" : "No";
+            const tempHigh = forecastData.forecast.forecastday[0].day.maxtemp_f;
 
             let tempClass = '';
             if (temp > 45) {
@@ -76,10 +64,6 @@
                             <td class="${tempClass}">${temp}°F</td>
                         </tr>
                         <tr>
-                            <td>High in next 3 hours:</td>
-                            <td>${tempHigh}°F</td>
-                        </tr>
-                        <tr>
                             <td>Raining:</td>
                             <td>${rain}</td>
                         </tr>
@@ -93,25 +77,15 @@
                         </tr>
                         <tr>
                             <td>Wind Direction:</td>
-                            <td>${windDirection} degrees</td>
+                            <td>${windDirection}°</td>
+                        </tr>
+                        <tr>
+                            <td>High in next 24 hours:</td>
+                            <td>${tempHigh}°F</td>
                         </tr>
                     </tbody>
                 </table>
             `;
-        }
-
-        function displayPollutionData(data) {
-            const weatherInfoDiv = document.getElementById('weather-info');
-            const pollutionIndex = data.list[0].main.aqi;
-
-            // Append Pollution Index to the table
-            const table = weatherInfoDiv.querySelector('table tbody');
-            const pollutionRow = document.createElement('tr');
-            pollutionRow.innerHTML = `
-                <td>Pollution Index:</td>
-                <td>${pollutionIndex}</td>
-            `;
-            table.appendChild(pollutionRow);
         }
     </script>
 
