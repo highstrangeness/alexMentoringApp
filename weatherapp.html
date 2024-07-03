@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App - Fort Wayne</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { padding-top: 50px; }
+        #weather-info { margin-top: 20px; }
+        h1 { font-weight: bold; font-size: 24px; }
+        table { margin: 0 auto; }
+        .temp-highlight { background-color: lightgreen; }
+        .temp-lowlight { background-color: lightblue; }
+    </style>
+</head>
+<body>
+    <div class="container text-center">
+        <h1>Fort Wayne Weather Information!</h1>
+        <div style="margin-top: 20px;">
+            <a href="Calculators.html" class="btn btn-primary">Go to Calculators</a>
+        </div>
+        <div id="weather-info">
+            <!-- Weather information will be displayed here -->
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetchWeatherData();
+        });
+
+        function fetchWeatherData() {
+            const apiKey = 'f26694ed1d494fcebf4153710242503'; // Replace with your WeatherAPI key
+            const weatherUrl = `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=Fort%20Wayne`;
+            const forecastUrl = `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=Fort%20Wayne`;
+
+            Promise.all([
+                fetch(weatherUrl).then(response => response.json()),
+                fetch(forecastUrl).then(response => response.json())
+            ]).then(data => {
+                displayWeatherAndForecastData(data[0], data[1]);
+            }).catch(error => console.error('Error:', error));
+        }
+
+        function displayWeatherAndForecastData(weatherData, forecastData) {
+            const weatherInfoDiv = document.getElementById('weather-info');
+            const temp = weatherData.current.temp_f;
+            const windSpeed = weatherData.current.wind_mph;
+            const windDirection = weatherData.current.wind_degree;
+            const rain = weatherData.current.precip_in > 0 ? "Yes" : "No";
+            const snow = weatherData.current.snow_in > 0 ? "Yes" : "No";
+            const tempHigh = forecastData.forecast.forecastday[0].day.maxtemp_f;
+
+            let tempClass = '';
+            if (temp > 45) {
+                tempClass = 'temp-highlight';
+            } else {
+                tempClass = 'temp-lowlight';
+            }
+
+            weatherInfoDiv.innerHTML = `
+                <table class="table table-bordered table-striped text-right">
+                    <tbody>
+                        <tr>
+                            <td>Current Temperature:</td>
+                            <td class="${tempClass}">${temp}°F</td>
+                        </tr>
+                        <tr>
+                            <td>Raining:</td>
+                            <td>${rain}</td>
+                        </tr>
+                        <tr>
+                            <td>Snow:</td>
+                            <td>${snow}</td>
+                        </tr>
+                        <tr>
+                            <td>Wind Speed:</td>
+                            <td>${windSpeed} mph</td>
+                        </tr>
+                        <tr>
+                            <td>Wind Direction:</td>
+                            <td>${windDirection}°</td>
+                        </tr>
+                        <tr>
+                            <td>High in next 24 hours:</td>
+                            <td>${tempHigh}°F</td>
+                        </tr>
+                    </tbody>
+                </table>
+            `;
+        }
+    </script>
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
