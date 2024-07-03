@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finance Calculators</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .calculator {
+            margin-bottom: 40px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        label, input {
+            display: block;
+            margin-bottom: 10px;
+        }
+        button {
+            margin-top: 10px;
+        }
+        h1 {
+            font-size: 1.8em;
+            color: darkgreen;
+            margin-bottom: 20px;
+        }
+        h2 {
+            font-size: 1.4em;
+            color: rgb(71, 109, 71);
+            margin-bottom: 20px;
+        }
+        .result {
+            font-weight: bold;
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Finance Calculators</h1>
+        <div class="calculator">
+            <h2>Regulation Z APR Lookup by Interest Rate</h2>
+            <p>
+                <i>Note: This calculator is designed for 6Pay, which is made in 5 payments, and for interest rates between 2% and 40.</i>
+            </p>
+            <label for="interest-rate">Interest Rate (%)</label>
+            <input type="number" id="interest-rate" step="0.01">
+            <button onclick="calculateFinanceCharge()">Calculate Finance Charge per $100</button>
+            <p id="finance-charge-result" class="result"></p>
+        </div>
+        <div class="calculator">
+            <h2>Regulation Z APR Lookup by Finance Charge</h2>
+            <label for="finance-charge">Finance Charge per $100</label>
+            <input type="number" id="finance-charge" step="0.01">
+            <button onclick="calculateInterestRate()">Calculate Interest Rate (%)</button>
+            <p id="interest-rate-result" class="result"></p>
+        </div>
+        
+        <h2>Determine Minimum Amount Financed</h2>
+        <p>To determine the minimum amount financed pursuant to State Usuray laws, enter the total <b>finance charge (I)</b>, 
+            the <b>annual interest rate (r)</b> as a percentage, and the <b>repayment term in months (n)</b>:</p>
+        <p></p>
+        <i>Note: This calculator assumes equal monthly payments.</i>
+        <div class="calculator">
+            <label for="interest">Total Finance Charge (I): </label>
+            <input type="number" id="interest" placeholder="Enter total finance charge">
+            <label for="rate">Annual Interest Rate (r) (%): </label>
+            <input type="number" id="rate" placeholder="Enter annual interest rate">
+            <label for="months">Number of Months (n): </label>
+            <input type="number" id="months" placeholder="Enter number of months">
+            <button onclick="calculatePrincipal()">Calculate</button>
+            <p id="result" class="result"></p>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
